@@ -51,9 +51,11 @@ async function proxy(env, req, path) {
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
 const clean = (v, max) => String(v || "").replace(/[\u0000-\u0008\u000b-\u001f]/g, "").trim().slice(0, max);
 
+const isFormPost = (req) => (req.headers.get("content-type") || "").includes("application/x-www-form-urlencoded");
+
 // Contact form: each message is saved to the MESSAGES KV namespace for 12 months
 async function contact(req, env) {
-  const d = await req.json().catch(() => null);
+  const d = isFormPost(req) ? Object.fromEntries(await req.formData()) : await req.json().catch(() => null);
   if (!d) return json({ error: "Bad request" }, 400);
   if (d.website) return json({ ok: true }); // hidden field only bots fill in
   const name = clean(d.name, 120);
@@ -91,7 +93,11 @@ export default {
     try {
       if (url.pathname === "/api/lookup" && req.method === "GET") return await proxy(env, req, "/?ip=" + encodeURIComponent(url.searchParams.get("ip") || ""));
       if (url.pathname === "/api/batch" && req.method === "POST") return await proxy(env, req, "/batch");
-      if (url.pathname === "/api/contact" && req.method === "POST") return await contact(req, env);
+      if (url.pathname === "/api/contact" && req.method === "POST") {
+        const r = await contact(req, env);
+        // Plain form post (script not loaded): send the visitor back to the page with a status flag
+        return isFormPost(req) ? Response.redirect(new URL(r.ok ? "/?sent=1#contact" : "/?sent=0#contact", url).toString(), 303) : r;
+      }
       if (url.pathname === "/api/health") return json({ ok: true, lookup: Boolean(env.IPINFO), contact: Boolean(env.MESSAGES) });
       if (url.pathname.startsWith("/api/")) return json({ error: "not found" }, 404);
     } catch (e) {
@@ -116,6 +122,6 @@ async function serveFromKV(req, url, env) {
   let status = 200;
   if (!body) { key = "/404.html"; body = await env.SITE.get(key, "arrayBuffer"); status = 404; }
   const ext = key.split(".").pop();
-  const cache = ext === "html" ? "public, max-age=0, must-revalidate" : "public, max-age=3600";
+  const cache = ext === "html" ? "public, max-age=0, must-revalidate" : "public, max-age=300";
   return new Response(req.method === "HEAD" ? null : body, { status, headers: { "content-type": TYPES[ext] || "application/octet-stream", "cache-control": cache } });
 }

@@ -3,6 +3,9 @@ document.querySelectorAll("[data-year]").forEach((el) => (el.textContent = new D
 
 document.querySelectorAll("form[data-contact]").forEach((form) => {
   const msg = form.querySelector(".form-msg");
+  const sent = new URLSearchParams(location.search).get("sent");
+  if (sent === "1") { msg.className = "form-msg ok"; msg.textContent = "Thanks. Your message was sent and we'll reply by email."; }
+  if (sent === "0") { msg.className = "form-msg err"; msg.textContent = "That didn't go through. Please check the form, or email hello@soluniplabs.com."; }
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const btn = form.querySelector("button[type=submit]");
