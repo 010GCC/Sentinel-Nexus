@@ -5,7 +5,9 @@ import { companyEmailCheck as c, leadGrade, networkType, emailParts } from "../s
 const cases = [
   ["john@acme.com", "Acme Corp", 1],
   ["daniel.menza@fennerppd.com", "Fenner", 0.9],
-  ["x@frenchoil.com", "French Oil Mill Machinery Company", 0.9],
+  ["x@bluepeak.com", "Blue Peak Mill Machinery Company", 0.9],
+  ["eniwho@eni3.com", "eniwher3", 0.7],
+  ["x@acxe.com", "Acme", 0],
   ["x@acmeintl.com", "Acme International Group", 0.8],
   ["x@acmee.com", "Acme", 0.9],
   ["x@acmi.com", "Acme Inc", 0],
@@ -48,7 +50,7 @@ test("network type", () => {
   assert.equal(networkType({ org: "AS16509 Amazon.com, Inc." }), "hosting");
   assert.equal(networkType({ org: "AS14061 DigitalOcean, LLC" }), "hosting");
   assert.equal(networkType({ org: "AS7922 Comcast Cable Communications, LLC" }), "isp");
-  assert.equal(networkType({ org: "AS12345 French Oil Mill Machinery" }), "business");
+  assert.equal(networkType({ org: "AS12345 Blue Peak Machinery" }), "business");
   assert.equal(networkType({ privacy: { vpn: true } }), "anonymizer");
 });
 

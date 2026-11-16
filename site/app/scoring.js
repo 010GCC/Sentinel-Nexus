@@ -162,6 +162,13 @@ export function companyEmailCheck(email, company) {
   const d = lenRatio >= 0.6 && Math.min(comp.length, dom.length) >= 6 ? dice(comp, dom) : 0;
   if (d >= 0.6) return { ...base, score: 0.7, reason: `Close spelling match (${Math.round(d * 100)}%)` };
 
+  // Shortened name: the domain is the start of the company name plus its ending ("eniwher3" -> eni3)
+  if (dom.length >= 4 && dom.length < comp.length) {
+    for (let k = dom.length - 1; k >= 3; k--) {
+      if (comp.startsWith(dom.slice(0, k)) && comp.endsWith(dom.slice(k))) return { ...base, score: 0.7, reason: "Domain looks like a shortened company name" };
+    }
+  }
+
   const hit = distinct.find((t) => t.length >= 4 && dom.includes(t));
   if (hit) return { ...base, score: 0.6, reason: `Domain contains "${hit}"` };
 
