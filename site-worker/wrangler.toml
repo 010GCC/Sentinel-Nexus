@@ -1,0 +1,26 @@
+name = "soluniplabs-site"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[assets]
+directory = "../site"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"
+run_worker_first = true
+
+[[services]]
+binding = "IPINFO"
+service = "ipinfo-proxy"
+
+[vars]
+# Fill these in from HubSpot (Marketing > Forms > your form > share/embed code)
+HUBSPOT_PORTAL_ID = ""
+HUBSPOT_FORM_ID = ""
+
+# Go live on the real domain (after testing the workers.dev preview):
+# routes = [
+#   { pattern = "soluniplabs.com", custom_domain = true },
+#   { pattern = "www.soluniplabs.com", custom_domain = true },
+# ]

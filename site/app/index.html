@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolunIP Labs Tool | Enrich IPs and Grade Leads</title>
+  <meta name="description" content="Paste IPs or upload a CSV of form submissions to get location, network type, email-to-company match scores, and A/B/C lead grades.">
+  <link rel="canonical" href="https://soluniplabs.com/app/">
+  <meta property="og:title" content="SolunIP Labs Tool">
+  <meta property="og:description" content="Enrich IPs and grade form-submission leads in your browser. Free.">
+  <meta property="og:image" content="https://soluniplabs.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+  <style>
+    main { padding: 36px 0 70px; }
+    h1 { font-size: 30px; margin-bottom: 4px; }
+    .tabs { display: flex; gap: 8px; margin: 22px 0 16px; flex-wrap: wrap; }
+    .tab { background: transparent; color: var(--ink); border: 1px solid rgba(149,165,166,0.35); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; }
+    .tab[aria-selected="true"] { background: rgba(253,184,19,0.15); border-color: var(--gold); color: var(--gold); }
+    .panel[hidden] { display: none; }
+    textarea { min-height: 160px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
+    .drop { border: 2px dashed rgba(149,165,166,0.4); border-radius: 12px; padding: 34px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; }
+    .drop.over, .drop:hover { border-color: var(--gold); background: rgba(253,184,19,0.05); }
+    .drop input { display: none; }
+    .map { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 16px; }
+    .actions { display: flex; gap: 12px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+    .progress { flex: 1; min-width: 200px; height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
+    .progress > div { height: 100%; width: 0; background: var(--gold); transition: width .2s; }
+    .status { color: var(--slate); font-size: 14px; min-height: 1.4em; margin-top: 8px; }
+    .status.err { color: var(--bad); }
+    .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 26px 0 16px; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+    .stat b { display: block; font-size: 26px; }
+    .stat span { color: var(--slate); font-size: 13px; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    .toolbar input[type=text] { max-width: 280px; }
+    .chip { border: 1px solid rgba(149,165,166,0.35); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 14px; cursor: pointer; font-size: 14px; }
+    .chip.on { border-color: var(--gold); color: var(--gold); background: rgba(253,184,19,0.12); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+    table.results { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    table.results th, table.results td { padding: 9px 11px; text-align: left; border-bottom: 1px solid rgba(149,165,166,0.12); white-space: nowrap; }
+    table.results th { position: sticky; top: 0; background: #1a2638; color: var(--gold); cursor: pointer; user-select: none; }
+    table.results td.wrap { white-space: normal; min-width: 220px; color: var(--slate); }
+    table.results tr:hover td { background: rgba(255,255,255,0.03); }
+    .grade { display: inline-block; min-width: 26px; text-align: center; border-radius: 6px; font-weight: 700; padding: 1px 7px; color: #000; }
+    .gA { background: var(--good); } .gB { background: var(--warn); } .gC { background: var(--bad); } .g- { background: var(--slate); }
+    .net { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: rgba(255,255,255,0.08); }
+    .net.hosting, .net.anonymizer { background: rgba(242,85,90,0.2); color: #ff9a9d; }
+    .net.business { background: rgba(62,207,142,0.18); color: #7ee2b3; }
+    .err-cell { color: var(--bad); }
+    .cta-call { margin-top: 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+        @media (max-width: 800px) { .map, .summary { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="container header-content">
+      <a href="/" class="logo-area" aria-label="SolunIP Labs home">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="brand-name"><span class="solar">Solun</span><span class="lunar">IP</span> Labs</span>
+      </a>
+      <nav class="top">
+        <a class="link" href="/docs/">Docs</a>
+        <a class="btn ghost" href="/#toolkit">Free toolkit</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Enrich IPs and grade leads</h1>
+    <p class="muted">Your file is read in your browser. Only IP addresses are sent for lookup, and nothing is stored.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="csv">Upload CSV</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="paste">Paste IPs</button>
+    </div>
+
+    <section class="panel card" id="panel-csv" style="padding:24px">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".csv,text/csv">
+        <strong>Drop a CSV here or click to choose</strong>
+        <div class="muted small" style="margin-top:6px">Export from HubSpot, Salesforce, your form tool, or a spreadsheet. Needs an IP column; Email and Company columns enable scoring.</div>
+        <div id="fileName" class="small" style="margin-top:10px;color:var(--gold)"></div>
+      </label>
+      <div class="map" id="map" hidden>
+        <div><label for="mIp">IP column</label><select id="mIp"></select></div>
+        <div><label for="mEmail">Email column</label><select id="mEmail"></select></div>
+        <div><label for="mCompany">Company column</label><select id="mCompany"></select></div>
+        <div><label for="mCountry">Country (optional)</label><select id="mCountry"></select></div>
+        <div><label for="mRegion">State/region (optional)</label><select id="mRegion"></select></div>
+      </div>
+    </section>
+
+    <section class="panel card" id="panel-paste" style="padding:24px" hidden>
+      <label for="ips">IP addresses, one per line (or separated by commas or spaces)</label>
+      <textarea id="ips" placeholder="8.8.8.8&#10;1.1.1.1&#10;2001:4860:4860::8888"></textarea>
+    </section>
+
+    <div class="actions">
+      <button class="btn" id="run">Enrich &rarr;</button>
+      <button class="btn ghost" id="cancel" hidden>Cancel</button>
+      <button class="btn ghost" id="sample">Try sample data</button>
+      <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    </div>
+    <div class="status" id="status" role="status"></div>
+
+    <div id="results" hidden>
+      <div class="summary">
+        <div class="stat"><b id="sTotal">0</b><span>rows</span></div>
+        <div class="stat"><b id="sA" style="color:var(--good)">0</b><span>grade A</span></div>
+        <div class="stat"><b id="sB" style="color:var(--warn)">0</b><span>grade B</span></div>
+        <div class="stat"><b id="sC" style="color:var(--bad)">0</b><span>grade C</span></div>
+      </div>
+      <div class="toolbar">
+        <button class="chip on" data-grade="all">All</button>
+        <button class="chip" data-grade="A">A</button>
+        <button class="chip" data-grade="B">B</button>
+        <button class="chip" data-grade="C">C</button>
+        <input type="text" id="search" placeholder="Search results">
+        <span style="flex:1"></span>
+        <button class="btn" id="export">Download CSV</button>
+      </div>
+      <div class="table-wrap"><table class="results" id="table"><thead></thead><tbody></tbody></table></div>
+
+      <div class="card cta-call">
+        <div><h3 style="color:var(--gold);margin-bottom:4px">Want this running on every form submission?</h3>
+        <p class="muted">We help marketing ops teams build lead validation into their HubSpot and Salesforce workflows.</p></div>
+        <a class="btn" href="mailto:hello@soluniplabs.com?subject=Lead%20validation%20help">Talk to us</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column"><h4>Product</h4><ul><li><a href="/">Home</a></li><li><a href="/docs/">Documentation</a></li></ul></div>
+        <div class="footer-column"><h4>Contact</h4><ul><li><a href="mailto:hello@soluniplabs.com">hello@soluniplabs.com</a></li></ul></div>
+        <div class="footer-column"><h4>Legal</h4><ul><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Use</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">&copy; <span data-year>2026</span> SolunIP Labs &bull; Illuminating the unseen web</div>
+    </div>
+  </footer>
+  <script src="/assets/site.js" defer></script>
+  <script type="module" src="/app/app.js"></script>
+</body>
+</html>

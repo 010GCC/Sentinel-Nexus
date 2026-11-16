@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation | SolunIP Labs</title>
+  <meta name="description" content="How to use SolunIP Labs: CSV format, output fields, email match scoring, lead grades, and API.">
+  <link rel="canonical" href="https://soluniplabs.com/docs/">
+  <meta property="og:title" content="Documentation | SolunIP Labs">
+  <meta property="og:description" content="How to use SolunIP Labs: CSV format, output fields, email match scoring, lead grades, and API.">
+  <meta property="og:image" content="https://soluniplabs.com/assets/og.png">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+  <header class="site">
+    <div class="container header-content">
+      <a href="/" class="logo-area" aria-label="SolunIP Labs home">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="brand-name"><span class="solar">Solun</span><span class="lunar">IP</span> Labs</span>
+      </a>
+      <nav class="top">
+        <a class="link" href="/docs/">Docs</a>
+        <a class="btn" href="/app/">Launch Tool &rarr;</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container narrow prose">
+    <h1>Documentation</h1>
+    <p class="muted">How to use SolunIP Labs and how the scores are calculated.</p>
+
+    <div class="callout">On this page: <a href="#quick-start">Quick start</a> &middot; <a href="#csv">Preparing your CSV</a> &middot; <a href="#fields">Output fields</a> &middot; <a href="#scoring">Email match scoring</a> &middot; <a href="#grades">Lead grades</a> &middot; <a href="#network">Network types</a> &middot; <a href="#limits">Limits and privacy</a> &middot; <a href="#api">API</a> &middot; <a href="#troubleshooting">Troubleshooting</a></div>
+
+    <h2 id="quick-start">Quick start</h2>
+    <ol>
+      <li>Open the <a href="/app/">tool</a>. No account or API key is needed.</li>
+      <li>Choose <strong>Upload CSV</strong> and drop in an export of your form submissions, or choose <strong>Paste IPs</strong> for a simple list.</li>
+      <li>Check the detected columns, then press <strong>Enrich</strong>.</li>
+      <li>Filter by grade, then press <strong>Download CSV</strong>. The download contains your original columns plus the enrichment.</li>
+    </ol>
+    <p>Want to see it first? Press <strong>Try sample data</strong> in the tool.</p>
+
+    <h2 id="csv">Preparing your CSV</h2>
+    <p>The first row should be column headers. The tool looks for these columns automatically, and you can change its choices:</p>
+    <table>
+      <tr><th>Purpose</th><th>Recognized header names</th><th>Needed for</th></tr>
+      <tr><td>IP address</td><td>IP, IP Address, User IP, Remote IP, Client IP</td><td>Location and network data</td></tr>
+      <tr><td>Email</td><td>Email, Email Address, E-mail</td><td>Email match score</td></tr>
+      <tr><td>Company</td><td>Company, Company Name, Organization, Account</td><td>Email match score</td></tr>
+      <tr><td>Country</td><td>Country</td><td>Location check (optional)</td></tr>
+      <tr><td>State / region</td><td>State, Region, Province</td><td>Location check (optional)</td></tr>
+    </table>
+    <p>Comma, semicolon, and tab separated files all work. Up to 5,000 rows per run.</p>
+
+    <h2 id="fields">Output fields</h2>
+    <table>
+      <tr><th>Column</th><th>Meaning</th></tr>
+      <tr><td><code>solunip_grade</code></td><td>A, B, or C (see <a href="#grades">Lead grades</a>)</td></tr>
+      <tr><td><code>solunip_points</code></td><td>0 to 100 score behind the grade</td></tr>
+      <tr><td><code>solunip_reasons</code></td><td>Plain-language signals that moved the score</td></tr>
+      <tr><td><code>company_email_score</code></td><td>0.0 to 1.0 email-to-company match</td></tr>
+      <tr><td><code>company_email_reason</code></td><td>Which matching strategy applied</td></tr>
+      <tr><td><code>is_corporate_email</code>, <code>is_freemail</code>, <code>is_disposable_email</code></td><td>Email domain type</td></tr>
+      <tr><td><code>ip_network_type</code></td><td>business, isp, mobile, hosting, or anonymizer</td></tr>
+      <tr><td><code>ip_org</code></td><td>Network owner (from the ASN)</td></tr>
+      <tr><td><code>ip_city</code>, <code>ip_region</code>, <code>ip_country</code>, <code>ip_postal</code>, <code>ip_loc</code>, <code>ip_timezone</code></td><td>Approximate location</td></tr>
+      <tr><td><code>ip_hostname</code></td><td>Reverse DNS name, when one exists</td></tr>
+      <tr><td><code>ip_error</code></td><td>Why a lookup failed (for example a private IP)</td></tr>
+    </table>
+
+    <h2 id="scoring">Email match scoring</h2>
+    <p>The tool compares the email's domain with the company name after removing legal suffixes (Inc, LLC, Ltd, GmbH, and so on), punctuation, and accents. The first strategy that matches sets the score:</p>
+    <table>
+      <tr><th>Score</th><th>Strategy</th><th>Example</th></tr>
+      <tr><td>1.0</td><td>Exact match</td><td><code>acme.com</code> + "Acme Corp"</td></tr>
+      <tr><td>0.9</td><td>One contains the other</td><td><code>fennerppd.com</code> + "Fenner"</td></tr>
+      <tr><td>0.8</td><td>Company words spell out the domain, including common abbreviations</td><td><code>abcmfg.com</code> + "ABC Manufacturing"</td></tr>
+      <tr><td>0.75</td><td>Acronym</td><td><code>eliteap.com</code> + "Elite Advanced Polymers"</td></tr>
+      <tr><td>0.7</td><td>Close spelling, or a free-mail username that matches the company</td><td><code>acme@gmail.com</code> + "Acme"</td></tr>
+      <tr><td>0.6</td><td>Domain contains a distinctive company word</td><td><code>northwind-freight.com</code> + "Northwind Logistics"</td></tr>
+      <tr><td>0.0</td><td>No match, free-mail, or throwaway domain</td><td><code>bob@gmail.com</code> + "Acme"</td></tr>
+    </table>
+    <p>Common words like "tech", "global", "group", and "solutions" don't count as a match on their own, which prevents false positives such as <code>tech.com</code> matching "Acme Tech".</p>
+
+    <h2 id="grades">Lead grades</h2>
+    <p>Every row starts at 50 points. Signals add or subtract points, and the total sets the grade: <strong>A</strong> is 70 or more, <strong>B</strong> is 45 to 69, and <strong>C</strong> is below 45.</p>
+    <table>
+      <tr><th>Signal</th><th>Points</th></tr>
+      <tr><td>Corporate email that matches the company (score 0.75 or higher)</td><td>+40</td></tr>
+      <tr><td>Corporate email with a partial match (0.6 to 0.74)</td><td>+25</td></tr>
+      <tr><td>Corporate email that doesn't match</td><td>+5</td></tr>
+      <tr><td>Free-mail address (username matches the company: +15)</td><td>+5</td></tr>
+      <tr><td>Throwaway email domain</td><td>&minus;35</td></tr>
+      <tr><td>IP owned by the company itself</td><td>+20</td></tr>
+      <tr><td>Business network</td><td>+5</td></tr>
+      <tr><td>Hosting or datacenter IP</td><td>&minus;25</td></tr>
+      <tr><td>VPN, proxy, or Tor IP (when your data plan reports it)</td><td>&minus;30</td></tr>
+      <tr><td>Form country matches IP country / form state matches IP region</td><td>+5 each</td></tr>
+      <tr><td>Form country doesn't match IP country</td><td>&minus;15</td></tr>
+    </table>
+    <p>Grades are a triage aid. A C-grade lead can still be real, for example someone on a work VPN, so review before deleting anything.</p>
+
+    <h2 id="network">Network types</h2>
+    <ul>
+      <li><strong>business</strong>: the IP belongs to an organization's own network.</li>
+      <li><strong>isp</strong>: a consumer or business internet provider such as Comcast or Spectrum.</li>
+      <li><strong>mobile</strong>: a cellular carrier.</li>
+      <li><strong>hosting</strong>: a cloud or datacenter provider such as AWS or DigitalOcean. Real people rarely browse from these, so they often mean bots, scrapers, or VPNs.</li>
+      <li><strong>anonymizer</strong>: a known VPN, proxy, or Tor exit. Only shown when the IP data includes privacy detection.</li>
+    </ul>
+    <p>Network type is inferred from the network owner's name unless the IP data includes an explicit type.</p>
+
+    <h2 id="limits">Limits and privacy</h2>
+    <ul>
+      <li>Your file never leaves your browser. Only IP addresses are sent for lookup.</li>
+      <li>Lookups are limited to 60 requests per minute per visitor. The tool batches IPs, so this rarely matters.</li>
+      <li>Private and reserved addresses (such as 10.x.x.x or 192.168.x.x) can't be looked up.</li>
+      <li>City-level location is an estimate. Country is the most reliable field.</li>
+    </ul>
+
+    <h2 id="api">API</h2>
+    <p>The lookup service the tool uses is available for light use from soluniplabs.com pages:</p>
+<pre><code>GET  /api/lookup?ip=8.8.8.8
+POST /api/batch   {"ips": ["8.8.8.8", "1.1.1.1"]}   (up to 100 per request)</code></pre>
+    <p>Responses are IPinfo-style JSON. Need higher volume or an integration with your CRM? <a href="mailto:hello@soluniplabs.com">Get in touch</a>.</p>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
+    <h3>"Pick at least an IP column or an Email column"</h3>
+    <p>The tool couldn't recognize your headers. Choose the right columns in the dropdowns that appear after you load the file.</p>
+    <h3>Every lookup fails</h3>
+    <p>Some corporate networks block outside lookups. Try from another network. If the Error column says "rate limited", wait a minute and run again.</p>
+    <h3>Scores look wrong for a company</h3>
+    <p>Email us the email domain and company name (no personal details needed) at <a href="mailto:hello@soluniplabs.com">hello@soluniplabs.com</a> and we'll tune the matching.</p>
+  </main>
+
+  <footer class="site">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column"><h4>Product</h4><ul><li><a href="/app/">Launch Tool</a></li><li><a href="/docs/">Documentation</a></li></ul></div>
+        <div class="footer-column"><h4>Contact</h4><ul><li><a href="mailto:hello@soluniplabs.com">hello@soluniplabs.com</a></li></ul></div>
+        <div class="footer-column"><h4>Legal</h4><ul><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Use</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">&copy; <span data-year>2026</span> SolunIP Labs &bull; Illuminating the unseen web</div>
+    </div>
+  </footer>
+  <script src="/assets/site.js" defer></script>
+</body>
+</html>
