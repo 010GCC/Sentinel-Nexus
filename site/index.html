@@ -88,23 +88,19 @@
         <p class="note">No signup. Runs in your browser. Your lead list is never stored.</p>
       </div>
 
-      <div class="toolkit" id="toolkit">
-        <span class="badge">Free toolkit</span>
-        <h3>Get the Lead Validation Toolkit</h3>
-        <p class="muted">A practical checklist and scoring guide you can use with or without the tool.</p>
-        <ul>
-          <li>&#10003; The 7-Minute Lead Validation Checklist (PDF)</li>
-          <li>&#10003; Email-to-company scoring guide</li>
-          <li>&#10003; Occasional tips and tool updates. No spam.</li>
-        </ul>
-        <form data-signup="hero">
-          <div class="field"><input type="email" name="email" placeholder="Work email" required autocomplete="email"></div>
-          <div class="field"><input type="text" name="company" placeholder="Company name" required autocomplete="organization"></div>
-          <div class="field"><input type="text" name="jobtitle" placeholder="Job title (optional)" autocomplete="organization-title"></div>
-          <label class="check"><input type="checkbox" name="optin" value="yes" checked> Send me occasional lead validation tips</label>
-          <button type="submit" class="btn" style="width:100%;margin-top:14px">Send me the toolkit &rarr;</button>
+      <div class="toolkit" id="contact">
+        <span class="badge">Contact</span>
+        <h3>Questions or need a hand?</h3>
+        <p class="muted">Ask about the tool, or about building lead validation into your own workflow. We reply by email.</p>
+        <form data-contact="hero" style="margin-top:16px">
+          <div class="field"><input type="text" name="name" placeholder="Your name" required autocomplete="name" maxlength="120"></div>
+          <div class="field"><input type="email" name="email" placeholder="Work email" required autocomplete="email" maxlength="254"></div>
+          <div class="field"><input type="text" name="company" placeholder="Company (optional)" autocomplete="organization" maxlength="200"></div>
+          <div class="field"><textarea name="message" placeholder="How can we help?" required maxlength="4000" rows="4"></textarea></div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+          <button type="submit" class="btn" style="width:100%">Send message &rarr;</button>
           <p class="form-msg" role="status"></p>
-          <p class="small muted">Unsubscribe anytime. See our <a href="/privacy/">privacy policy</a>.</p>
+          <p class="small muted">We only use your details to reply. See our <a href="/privacy/">privacy policy</a>.</p>
         </form>
       </div>
     </div>
@@ -188,14 +184,7 @@
       <h2>Ready to stop guessing about your leads?</h2>
       <p class="muted">Run your last batch of form submissions through the tool. It takes about a minute.</p>
       <p style="margin-top:22px"><a href="/app/" class="btn lg">Launch Free Tool &rarr;</a></p>
-      <form data-signup="footer-cta">
-        <p class="muted small" style="text-align:center;margin-bottom:12px">Or get the toolkit by email:</p>
-        <div class="field"><input type="email" name="email" placeholder="Work email" required autocomplete="email"></div>
-        <div class="field"><input type="text" name="company" placeholder="Company name" required autocomplete="organization"></div>
-        <input type="hidden" name="optin" value="yes">
-        <button type="submit" class="btn ghost" style="width:100%">Send me the toolkit</button>
-        <p class="form-msg" role="status"></p>
-      </form>
+      <p class="muted" style="margin-top:22px">Have a question? <a href="#contact">Send us a message</a>.</p>
     </div>
   </section>
 

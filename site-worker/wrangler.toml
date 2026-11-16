@@ -3,21 +3,22 @@ main = "src/index.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
 
-[assets]
-directory = "../site"
-binding = "ASSETS"
-html_handling = "auto-trailing-slash"
-not_found_handling = "404-page"
-run_worker_first = true
+[[kv_namespaces]]
+binding = "SITE"       # static files, keyed by path (namespace "soluniplabs-site")
+id = "712b4e00933b4a79a7d306b22467ab59"
 
 [[services]]
 binding = "IPINFO"
 service = "ipinfo-proxy"
 
-[vars]
-# Fill these in from HubSpot (Marketing > Forms > your form > share/embed code)
-HUBSPOT_PORTAL_ID = ""
-HUBSPOT_FORM_ID = ""
+[[kv_namespaces]]
+binding = "MESSAGES"   # contact form messages (namespace "soluniplabs-messages")
+id = "7c40156f67704a5587363a72173b5e31"
+
+[[ratelimits]]
+name = "CONTACT_LIMITER"
+namespace_id = "1002"
+simple = { limit = 5, period = 60 }
 
 # Go live on the real domain (after testing the workers.dev preview):
 # routes = [

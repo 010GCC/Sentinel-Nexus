@@ -12,7 +12,7 @@ Everything runs on Cloudflare (DNS, hosting, and API):
 Browser ──► soluniplabs-site (Worker)
               ├─ static pages (site/)
               ├─ /api/lookup, /api/batch ──► ipinfo-proxy (Worker, service binding) ──► IPinfo API
-              └─ /api/subscribe ──► HubSpot Forms API
+              └─ /api/contact ──► KV (contact form messages)
 ```
 
 - **The visitor's CSV never leaves the browser.** Parsing and scoring happen client-side (`site/app/`). Only IP addresses are sent for lookup.
@@ -46,7 +46,7 @@ npx wrangler deploy -c site-worker/wrangler.toml   # site + API
 Secrets and settings live in Cloudflare, not in this repo:
 
 - `IPINFO_TOKEN` (secret, on `ipinfo-proxy`)
-- `HUBSPOT_PORTAL_ID` and `HUBSPOT_FORM_ID` (vars, on `soluniplabs-site`), which switch on the toolkit signup forms
+- KV namespaces `soluniplabs-site` (static files) and `soluniplabs-messages` (contact form messages, kept 12 months)
 
 ## License
 

@@ -1,8 +1,8 @@
 // soluniplabs.com site worker
-// Serves the static site (env.ASSETS) and same-origin API routes:
+// Serves the static site (from the SITE KV namespace) and same-origin API routes:
 //   GET  /api/lookup?ip=   -> ipinfo-proxy (service binding IPINFO)
 //   POST /api/batch        -> ipinfo-proxy /batch
-//   POST /api/subscribe    -> HubSpot Forms submission (needs HUBSPOT_PORTAL_ID + HUBSPOT_FORM_ID vars)
+//   POST /api/contact      -> saves the contact form message to the MESSAGES KV namespace
 // Old Hostinger URLs are redirected to their new homes.
 
 const REDIRECTS = {
@@ -49,52 +49,31 @@ async function proxy(env, req, path) {
 }
 
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
+const clean = (v, max) => String(v || "").replace(/[\u0000-\u0008\u000b-\u001f]/g, "").trim().slice(0, max);
 
-async function subscribe(req, env) {
+// Contact form: each message is saved to the MESSAGES KV namespace for 12 months
+async function contact(req, env) {
   const d = await req.json().catch(() => null);
   if (!d) return json({ error: "Bad request" }, 400);
-  const email = String(d.email || "").trim().slice(0, 254);
-  const company = String(d.company || "").trim().slice(0, 200);
-  const jobtitle = String(d.jobtitle || "").trim().slice(0, 200);
+  if (d.website) return json({ ok: true }); // hidden field only bots fill in
+  const name = clean(d.name, 120);
+  const email = clean(d.email, 254);
+  const company = clean(d.company, 200);
+  const message = clean(d.message, 4000);
+  if (!name) return json({ error: "Please enter your name" }, 400);
   if (!EMAIL.test(email)) return json({ error: "Please enter a valid email" }, 400);
-  if (!company) return json({ error: "Please enter your company" }, 400);
-  if (!env.HUBSPOT_PORTAL_ID || !env.HUBSPOT_FORM_ID) return json({ error: "Signups aren't switched on yet" }, 503);
-
-  const fields = [
-    { objectTypeId: "0-1", name: "email", value: email },
-    { objectTypeId: "0-1", name: "company", value: company },
-  ];
-  if (jobtitle) fields.push({ objectTypeId: "0-1", name: "jobtitle", value: jobtitle });
-
-  const page = String(d.page || "https://soluniplabs.com/");
-  const body = {
-    fields,
-    context: {
-      pageUri: page.startsWith("https://") ? page.slice(0, 500) : "https://soluniplabs.com/",
-      pageName: "SolunIP Labs - " + String(d.source || "site").slice(0, 40),
-      ipAddress: req.headers.get("CF-Connecting-IP") || undefined,
-    },
-  };
-  if (env.HUBSPOT_CONSENT_TEXT) {
-    body.legalConsentOptions = {
-      consent: {
-        consentToProcess: true,
-        text: env.HUBSPOT_CONSENT_TEXT,
-        communications: env.HUBSPOT_SUBSCRIPTION_TYPE_ID && d.optin === "yes"
-          ? [{ value: true, subscriptionTypeId: Number(env.HUBSPOT_SUBSCRIPTION_TYPE_ID), text: "Send me occasional lead validation tips" }]
-          : [],
-      },
-    };
+  if (message.length < 5) return json({ error: "Please enter a message" }, 400);
+  if (!env.MESSAGES) return json({ error: "The contact form isn't switched on yet" }, 503);
+  if (env.CONTACT_LIMITER) {
+    const { success } = await env.CONTACT_LIMITER.limit({ key: req.headers.get("CF-Connecting-IP") || "unknown" });
+    if (!success) return json({ error: "Too many messages, please try again in a minute" }, 429);
   }
-  const r = await fetch(
-    `https://api.hsforms.com/submissions/v3/integration/submit/${env.HUBSPOT_PORTAL_ID}/${env.HUBSPOT_FORM_ID}`,
-    { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }
-  );
-  if (!r.ok) {
-    const t = await r.text();
-    console.log("hubspot error", r.status, t.slice(0, 500));
-    return json({ error: "Couldn't save your signup right now" }, 502);
-  }
+  const received = new Date().toISOString();
+  const key = "msg:" + received + ":" + crypto.randomUUID().slice(0, 8);
+  await env.MESSAGES.put(key, JSON.stringify({ received, name, email, company, message, source: clean(d.source, 40) }), {
+    expirationTtl: 60 * 60 * 24 * 365,
+    metadata: { name, email },
+  });
   return json({ ok: true });
 }
 
@@ -112,8 +91,8 @@ export default {
     try {
       if (url.pathname === "/api/lookup" && req.method === "GET") return await proxy(env, req, "/?ip=" + encodeURIComponent(url.searchParams.get("ip") || ""));
       if (url.pathname === "/api/batch" && req.method === "POST") return await proxy(env, req, "/batch");
-      if (url.pathname === "/api/subscribe" && req.method === "POST") return await subscribe(req, env);
-      if (url.pathname === "/api/health") return json({ ok: true, lookup: Boolean(env.IPINFO), signups: Boolean(env.HUBSPOT_PORTAL_ID && env.HUBSPOT_FORM_ID) });
+      if (url.pathname === "/api/contact" && req.method === "POST") return await contact(req, env);
+      if (url.pathname === "/api/health") return json({ ok: true, lookup: Boolean(env.IPINFO), contact: Boolean(env.MESSAGES) });
       if (url.pathname.startsWith("/api/")) return json({ error: "not found" }, 404);
     } catch (e) {
       return json({ error: e.message || "internal error" }, 500);
