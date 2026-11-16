@@ -11,8 +11,9 @@ const MAX_BATCH = 100;
 const CACHE_TTL = 60 * 60 * 24; // IP data changes slowly; cache a day
 
 function corsHeaders(origin) {
-  const allowed =
-    ALLOWED_ORIGINS.includes(origin) || /\.pages\.dev$/.test(new URL(origin || "http://x").hostname);
+  let host = "";
+  try { host = new URL(origin).hostname; } catch {}
+  const allowed = ALLOWED_ORIGINS.includes(origin) || /\.pages\.dev$/.test(host);
   return {
     "Access-Control-Allow-Origin": allowed ? origin : ALLOWED_ORIGINS[0],
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
