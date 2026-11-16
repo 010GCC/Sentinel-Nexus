@@ -15,6 +15,11 @@ service = "ipinfo-proxy"
 binding = "MESSAGES"   # contact form messages (namespace "soluniplabs-messages")
 id = "7c40156f67704a5587363a72173b5e31"
 
+# Emails a copy of each contact message. The destination address is set in Cloudflare
+# (NOTIFY_TO variable on the worker), not in this repo. Needs Email Routing on soluniplabs.com.
+[[send_email]]
+name = "MAIL"
+
 [[ratelimits]]
 name = "CONTACT_LIMITER"
 namespace_id = "1002"

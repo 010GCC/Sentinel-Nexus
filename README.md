@@ -12,7 +12,7 @@ Everything runs on Cloudflare (DNS, hosting, and API):
 Browser ──► soluniplabs-site (Worker)
               ├─ static pages (site/)
               ├─ /api/lookup, /api/batch ──► ipinfo-proxy (Worker, service binding) ──► IPinfo API
-              └─ /api/contact ──► KV (contact form messages)
+              └─ /api/contact ──► KV (contact form messages) + email copy via Cloudflare Email Routing
 ```
 
 - **The visitor's CSV never leaves the browser.** Parsing and scoring happen client-side (`site/app/`). Only IP addresses are sent for lookup.

@@ -2,7 +2,7 @@
 // Serves the static site (from the SITE KV namespace) and same-origin API routes:
 //   GET  /api/lookup?ip=   -> ipinfo-proxy (service binding IPINFO)
 //   POST /api/batch        -> ipinfo-proxy /batch
-//   POST /api/contact      -> saves the contact form message to the MESSAGES KV namespace
+//   POST /api/contact      -> saves the contact form message to the MESSAGES KV namespace and emails a copy
 // Old Hostinger URLs are redirected to their new homes.
 
 const REDIRECTS = {
@@ -72,11 +72,37 @@ async function contact(req, env) {
   }
   const received = new Date().toISOString();
   const key = "msg:" + received + ":" + crypto.randomUUID().slice(0, 8);
-  await env.MESSAGES.put(key, JSON.stringify({ received, name, email, company, message, source: clean(d.source, 40) }), {
-    expirationTtl: 60 * 60 * 24 * 365,
-    metadata: { name, email },
-  });
+  const m = { received, name, email, company, message, source: clean(d.source, 40) };
+  await env.MESSAGES.put(key, JSON.stringify(m), { expirationTtl: 60 * 60 * 24 * 365, metadata: { name, email } });
+  await notify(env, m);
   return json({ ok: true });
+}
+
+// Email a copy to the site owner (Cloudflare Email Routing). The message is already saved, so a mail failure never loses it.
+async function notify(env, m) {
+  if (!env.MAIL || !env.NOTIFY_TO) return;
+  try {
+    const { EmailMessage } = await import("cloudflare:email");
+    const b64 = (s) => { let bin = ""; for (const x of new TextEncoder().encode(s)) bin += String.fromCharCode(x); return btoa(bin); };
+    const from = "form@soluniplabs.com";
+    const body = `Name: ${m.name}\nEmail: ${m.email}\nCompany: ${m.company || "-"}\nReceived: ${m.received}\n\n${m.message}\n`;
+    const raw = [
+      `From: SolunIP Labs contact form <${from}>`,
+      `To: ${env.NOTIFY_TO}`,
+      `Reply-To: ${m.email}`,
+      `Subject: =?UTF-8?B?${b64("SolunIP contact: " + m.name.slice(0, 30))}?=`,
+      `Message-ID: <${crypto.randomUUID()}@soluniplabs.com>`,
+      `Date: ${new Date().toUTCString()}`,
+      "MIME-Version: 1.0",
+      "Content-Type: text/plain; charset=utf-8",
+      "Content-Transfer-Encoding: base64",
+      "",
+      b64(body).replace(/(.{76})/g, "$1\r\n"),
+    ].join("\r\n");
+    await env.MAIL.send(new EmailMessage(from, env.NOTIFY_TO, raw));
+  } catch (e) {
+    console.log("contact email failed:", e.message);
+  }
 }
 
 export default {
