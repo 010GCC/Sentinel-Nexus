@@ -1,0 +1,12 @@
+{
+  "name": "soluniplabs-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm --prefix .. test",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

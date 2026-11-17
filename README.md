@@ -38,15 +38,25 @@ npx wrangler dev -c site-worker/wrangler.toml
 
 ## Deploy
 
+**The site deploys itself.** Every push to `main` that changes `site/` or `site-worker/` starts a
+Cloudflare Workers Build for `soluniplabs-site`:
+
+1. Runs the scoring tests (`npm run build` in `site-worker/`). A failing test stops the deploy.
+2. Runs `npx wrangler deploy`, which uploads the worker and every file in `site/` together.
+
+Build logs: Cloudflare dashboard > Workers & Pages > soluniplabs-site > Deployments.
+
+The lookup proxy is deployed by hand when it changes:
+
 ```bash
-npx wrangler deploy -c worker/wrangler.toml        # lookup proxy
-npx wrangler deploy -c site-worker/wrangler.toml   # site + API
+npx wrangler deploy -c worker/wrangler.toml
 ```
 
 Secrets and settings live in Cloudflare, not in this repo:
 
 - `IPINFO_TOKEN` (secret, on `ipinfo-proxy`)
-- KV namespaces `soluniplabs-site` (static files) and `soluniplabs-messages` (contact form messages, kept 12 months)
+- `NOTIFY_TO` (variable, on `soluniplabs-site`): the inbox that receives contact form copies. `keep_vars = true` stops deploys from removing it.
+- KV namespace `soluniplabs-messages` (contact form messages, kept 12 months). The older `soluniplabs-site` namespace is only a fallback now.
 
 ## License
 
