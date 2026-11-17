@@ -3,9 +3,29 @@ main = "src/index.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
 
-[[kv_namespaces]]
-binding = "SITE"       # static files, keyed by path (namespace "soluniplabs-site")
-id = "712b4e00933b4a79a7d306b22467ab59"
+# Deploys automatically from GitHub (Cloudflare Workers Builds) on every push to main
+# that touches site/ or site-worker/. Root directory: site-worker. Deploy command: npx wrangler deploy
+
+routes = [
+  { pattern = "soluniplabs.com", custom_domain = true },
+  { pattern = "www.soluniplabs.com", custom_domain = true },
+]
+
+# Keep variables set in the Cloudflare dashboard (NOTIFY_TO, the inbox that receives
+# contact form copies). It is deliberately not stored in this public repo.
+keep_vars = true
+
+# The site files in ../site are uploaded with the worker. run_worker_first lets the worker
+# add security headers and handle /api/* and redirects before a file is served.
+[assets]
+directory = "../site"
+binding = "ASSETS"
+run_worker_first = true
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"
+
+[observability]
+enabled = true
 
 [[services]]
 binding = "IPINFO"
@@ -15,8 +35,12 @@ service = "ipinfo-proxy"
 binding = "MESSAGES"   # contact form messages (namespace "soluniplabs-messages")
 id = "7c40156f67704a5587363a72173b5e31"
 
-# Emails a copy of each contact message. The destination address is set in Cloudflare
-# (NOTIFY_TO variable on the worker), not in this repo. Needs Email Routing on soluniplabs.com.
+# Old static file store, kept as a fallback. Not used while ASSETS is bound.
+[[kv_namespaces]]
+binding = "SITE"       # namespace "soluniplabs-site"
+id = "712b4e00933b4a79a7d306b22467ab59"
+
+# Emails a copy of each contact message to NOTIFY_TO. Needs Email Routing on soluniplabs.com.
 [[send_email]]
 name = "MAIL"
 
@@ -24,9 +48,3 @@ name = "MAIL"
 name = "CONTACT_LIMITER"
 namespace_id = "1002"
 simple = { limit = 5, period = 60 }
-
-# Go live on the real domain (after testing the workers.dev preview):
-# routes = [
-#   { pattern = "soluniplabs.com", custom_domain = true },
-#   { pattern = "www.soluniplabs.com", custom_domain = true },
-# ]

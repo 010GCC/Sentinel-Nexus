@@ -1,5 +1,5 @@
 // soluniplabs.com site worker
-// Serves the static site (from the SITE KV namespace) and same-origin API routes:
+// Serves the static site (files in ../site, bound as ASSETS; SITE KV is a fallback) and same-origin API routes:
 //   GET  /api/lookup?ip=   -> ipinfo-proxy (service binding IPINFO)
 //   POST /api/batch        -> ipinfo-proxy /batch
 //   POST /api/contact      -> saves the contact form message to the MESSAGES KV namespace and emails a copy
