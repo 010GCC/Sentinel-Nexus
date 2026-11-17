@@ -11,20 +11,20 @@
   <meta property="og:title" content="SolunIP Labs | Stop wasting time on fake leads">
   <meta property="og:description" content="Paste IPs or upload form submissions. Get location, network type, an email-to-company match score, and an A/B/C lead grade. Free, in your browser.">
   <meta property="og:url" content="https://soluniplabs.com/">
-  <meta property="og:image" content="https://soluniplabs.com/assets/og.png">
+  <meta property="og:image" content="https://soluniplabs.com/assets/og.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/logo.png" type="image/png"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#060709">
   <link rel="stylesheet" href="/assets/site.css">
   <style>
-    .hero { padding: 84px 0 92px; border-bottom: 1px solid var(--line); }
+    .hero { padding: 88px 0 96px; border-bottom: 1px solid var(--line); background: radial-gradient(900px 480px at 78% 0%, rgba(213, 216, 221, 0.07), transparent 70%); }
     .hero-content { display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; align-items: start; }
-    .hero h1 { font-size: 58px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 22px; }
+    .hero h1 { font-size: 60px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 22px; padding-bottom: 4px; background: linear-gradient(180deg, #ffffff 25%, #9aa0a9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .hero .sub { font-size: 19px; color: var(--slate); margin-bottom: 26px; max-width: 34em; }
     .benefits { list-style: none; margin-bottom: 32px; }
-    .benefits li { padding: 6px 0 6px 22px; position: relative; }
-    .benefits li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+    .benefits li { padding: 6px 0 6px 24px; position: relative; }
+    .benefits li::before { content: ""; position: absolute; left: 3px; top: 16px; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 9px 2px rgba(255, 255, 255, 0.55); }
     .hero .note { margin-top: 14px; color: var(--slate); font-size: 14px; }
-    .toolkit { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 30px; box-shadow: 0 24px 48px -28px rgba(22, 32, 46, 0.3); }
+    .toolkit { background: linear-gradient(180deg, #111318, #0b0d10); border: 1px solid #4a4f58; border-radius: 26px; padding: 30px; box-shadow: 0 30px 60px -30px #000, inset 0 1px 0 rgba(255, 255, 255, 0.06); }
     .toolkit h3 { font-size: 21px; margin-bottom: 6px; }
     .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
     .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px 28px; }
@@ -34,20 +34,20 @@
     .card p { color: var(--slate); font-size: 15px; }
     .steps { counter-reset: step; }
     .steps .card { border-top: 0; padding-top: 0; }
-    .steps .card::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: var(--ink); font-weight: 700; font-size: 14px; margin-bottom: 16px; }
-    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .steps .card::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #0d0f12; border: 1px solid var(--steel); color: var(--ink); font-weight: 600; font-size: 15px; margin-bottom: 16px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--edge); border-radius: 18px; background: var(--card); scrollbar-width: thin; scrollbar-color: #3a3f48 transparent; }
     .sample { width: 100%; border-collapse: collapse; font-size: 14px; }
     .sample th, .sample td { padding: 13px 16px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
     .sample tr:last-child td { border-bottom: 0; }
-    .sample th { color: var(--ink); background: var(--soft); font-weight: 600; font-size: 13px; }
+    .sample th { color: var(--ink); background: #13161b; font-weight: 600; font-size: 13px; }
     .sample td:last-child { color: var(--slate); white-space: normal; min-width: 220px; }
-    .grade { display: inline-block; min-width: 26px; text-align: center; border-radius: 6px; font-weight: 700; font-size: 13px; padding: 2px 8px; }
-    .gA { background: #dcfce7; color: #166534; } .gB { background: #fef3c7; color: #92400e; } .gC { background: #fee2e2; color: #991b1b; } .g- { background: var(--soft); color: var(--slate); }
+    .grade { display: inline-block; min-width: 26px; text-align: center; border-radius: 7px; font-weight: 700; font-size: 13px; padding: 2px 8px; }
+    .gA { background: rgba(110, 231, 160, 0.14); color: #86efac; } .gB { background: rgba(252, 211, 77, 0.14); color: #fcd34d; } .gC { background: rgba(252, 165, 165, 0.15); color: #fca5a5; } .g- { background: #171a1f; color: var(--slate); }
     .faq-item { border-bottom: 1px solid var(--line); }
     .faq-item summary { padding: 20px 0; cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
     .faq-item summary::-webkit-details-marker { display: none; }
     .faq-item summary::after { content: "+"; color: var(--slate); font-size: 20px; line-height: 1.2; font-weight: 400; }
-    .faq-item[open] summary::after { content: "−"; }
+    .faq-item[open] summary::after { content: "\2212"; }
     .faq-item p { padding: 0 0 20px; color: var(--slate); max-width: 62ch; }
     .cta-final { background: var(--soft); border-top: 1px solid var(--line); }
     .cta-final h2 { font-size: 36px; letter-spacing: -0.03em; margin-bottom: 12px; }
@@ -56,7 +56,7 @@
       .hero-content, .grid3 { grid-template-columns: 1fr; gap: 40px; }
       .grid3 { gap: 28px; }
       .grid4 { grid-template-columns: repeat(2, 1fr); }
-      .hero h1 { font-size: 40px; }
+      .hero h1 { font-size: 41px; }
     }
     @media (max-width: 520px) { .grid4 { grid-template-columns: 1fr; } }
   </style>
