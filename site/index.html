@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolunIP Labs | Free IP Enrichment and Lead Validation</title>
+  <meta name="description" content="Free tool for marketing ops: enrich form-submission IPs with location and network data, score whether each email matches its company, and export a graded CSV for your CRM.">
+  <link rel="canonical" href="https://soluniplabs.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SolunIP Labs">
+  <meta property="og:title" content="SolunIP Labs | Stop wasting time on fake leads">
+  <meta property="og:description" content="Paste IPs or upload form submissions. Get location, network type, an email-to-company match score, and an A/B/C lead grade. Free, in your browser.">
+  <meta property="og:url" content="https://soluniplabs.com/">
+  <meta property="og:image" content="https://soluniplabs.com/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/assets/logo.png" type="image/png"><link rel="apple-touch-icon" href="/assets/logo.png"><meta name="theme-color" content="#060709">
+  <link rel="stylesheet" href="/assets/site.css">
+  <style>
+    .hero { padding: 88px 0 96px; border-bottom: 1px solid var(--line); background: radial-gradient(900px 480px at 78% 0%, rgba(213, 216, 221, 0.07), transparent 70%); }
+    .hero-content { display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; align-items: start; }
+    .hero h1 { font-size: 60px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 22px; padding-bottom: 4px; background: linear-gradient(180deg, #ffffff 25%, #9aa0a9 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero .sub { font-size: 19px; color: var(--slate); margin-bottom: 26px; max-width: 34em; }
+    .benefits { list-style: none; margin-bottom: 32px; }
+    .benefits li { padding: 6px 0 6px 24px; position: relative; }
+    .benefits li::before { content: ""; position: absolute; left: 3px; top: 16px; width: 6px; height: 6px; border-radius: 50%; background: #fff; box-shadow: 0 0 9px 2px rgba(255, 255, 255, 0.55); }
+    .hero .note { margin-top: 14px; color: var(--slate); font-size: 14px; }
+    .toolkit { background: linear-gradient(180deg, #111318, #0b0d10); border: 1px solid #4a4f58; border-radius: 26px; padding: 30px; box-shadow: 0 30px 60px -30px #000, inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+    .toolkit h3 { font-size: 21px; margin-bottom: 6px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px 28px; }
+    .grid3 .card, .grid4 .card { background: none; border: 0; border-top: 1px solid var(--edge); border-radius: 0; padding: 18px 0 0; }
+    .card h3 { font-size: 18px; margin-bottom: 8px; }
+    .card h4 { font-size: 16px; margin-bottom: 6px; }
+    .card p { color: var(--slate); font-size: 15px; }
+    .steps { counter-reset: step; }
+    .steps .card { border-top: 0; padding-top: 0; }
+    .steps .card::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #0d0f12; border: 1px solid var(--steel); color: var(--ink); font-weight: 600; font-size: 15px; margin-bottom: 16px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--edge); border-radius: 18px; background: var(--card); scrollbar-width: thin; scrollbar-color: #3a3f48 transparent; }
+    .sample { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .sample th, .sample td { padding: 13px 16px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    .sample tr:last-child td { border-bottom: 0; }
+    .sample th { color: var(--ink); background: #13161b; font-weight: 600; font-size: 13px; }
+    .sample td:last-child { color: var(--slate); white-space: normal; min-width: 220px; }
+    .grade { display: inline-block; min-width: 26px; text-align: center; border-radius: 7px; font-weight: 700; font-size: 13px; padding: 2px 8px; }
+    .gA { background: rgba(110, 231, 160, 0.14); color: #86efac; } .gB { background: rgba(252, 211, 77, 0.14); color: #fcd34d; } .gC { background: rgba(252, 165, 165, 0.15); color: #fca5a5; } .g- { background: #171a1f; color: var(--slate); }
+    .faq-item { border-bottom: 1px solid var(--line); }
+    .faq-item summary { padding: 20px 0; cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: "+"; color: var(--slate); font-size: 20px; line-height: 1.2; font-weight: 400; }
+    .faq-item[open] summary::after { content: "\2212"; }
+    .faq-item p { padding: 0 0 20px; color: var(--slate); max-width: 62ch; }
+    .cta-final { background: var(--soft); border-top: 1px solid var(--line); }
+    .cta-final h2 { font-size: 36px; letter-spacing: -0.03em; margin-bottom: 12px; }
+    @media (max-width: 900px) {
+      .hero { padding: 56px 0 64px; }
+      .hero-content, .grid3 { grid-template-columns: 1fr; gap: 40px; }
+      .grid3 { gap: 28px; }
+      .grid4 { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 41px; }
+    }
+    @media (max-width: 520px) { .grid4 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="container header-content">
+      <a href="/" class="logo-area" aria-label="SolunIP Labs home">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="brand-name"><span class="solar">Solun</span><span class="lunar">IP</span> Labs</span>
+      </a>
+      <nav class="top">
+        <a class="link" href="#how">How it works</a>
+        <a class="link" href="/docs/">Docs</a>
+        <a class="btn" href="/app/">Launch Tool</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content">
+      <div>
+        <h1>Stop wasting time on fake leads</h1>
+        <p class="sub">Paste IPs or upload your form submissions. SolunIP Labs adds location and network data, checks whether each email actually matches the company it claims, and grades every lead A, B, or C.</p>
+        <ul class="benefits">
+          <li>Enrich a list of IPs with city, region, country, timezone, and network owner</li>
+          <li>Score email-to-company alignment and flag free-mail and throwaway addresses</li>
+          <li>Export a graded CSV ready for HubSpot, Salesforce, or any CRM</li>
+        </ul>
+        <a href="/app/" class="btn lg">Launch Free Tool</a>
+        <p class="note">No signup. Runs in your browser. Your lead list is never stored.</p>
+      </div>
+
+      <div class="toolkit" id="contact">
+        <h3>Questions or need a hand?</h3>
+        <p class="muted">Ask about the tool, or about building lead validation into your own workflow. We reply by email.</p>
+        <form data-contact="hero" method="post" action="/api/contact" style="margin-top:16px">
+          <div class="field"><input type="text" name="name" placeholder="Your name" required autocomplete="name" maxlength="120"></div>
+          <div class="field"><input type="email" name="email" placeholder="Work email" required autocomplete="email" maxlength="254"></div>
+          <div class="field"><input type="text" name="company" placeholder="Company (optional)" autocomplete="organization" maxlength="200"></div>
+          <div class="field"><textarea name="message" placeholder="How can we help?" required maxlength="4000" rows="4"></textarea></div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+          <button type="submit" class="btn" style="width:100%">Send message</button>
+          <p class="form-msg" role="status"></p>
+          <p class="small muted">We only use your details to reply. See our <a href="/privacy/">privacy policy</a>.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>Bad form data hides in plain sight</h2>
+        <p>Most of it is easy to catch once you look. Nobody has time to look at every row.</p>
+      </div>
+      <div class="grid3">
+        <div class="card"><h3>Mismatched emails</h3><p>"Acme Corp" submitted from a Gmail address, or from a domain with no connection to the company. Some are fine. Many are students, competitors, or bots.</p></div>
+        <div class="card"><h3>Wasted sales time</h3><p>Every junk lead that reaches a rep costs a call, an email sequence, and a little more trust between marketing and sales.</p></div>
+        <div class="card"><h3>Hidden signals</h3><p>Submissions from hosting providers, far-off countries, or networks that don't fit the company are strong hints that something is off.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="how">
+    <div class="container">
+      <div class="section-header"><h2>Three steps, about a minute</h2></div>
+      <div class="grid3 steps">
+        <div class="card"><h3>Upload</h3><p>Drop in a CSV export from your form tool or CRM, or paste a list of IPs. Columns like Email, Company, and IP are detected automatically.</p></div>
+        <div class="card"><h3>Enrich and score</h3><p>Each IP gets location and network data. Each email gets a match score against its company, and each row gets an A, B, or C grade with the reasons.</p></div>
+        <div class="card"><h3>Export</h3><p>Filter to the grades you want and download a clean CSV. Import it straight back into your CRM.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <h2>What a graded lead list looks like</h2>
+        <p>Illustrative sample rows. Your results come from your own data.</p>
+      </div>
+      <div class="table-wrap">
+        <table class="sample">
+          <thead><tr><th>Email</th><th>Company</th><th>IP location / network</th><th>Email match</th><th>Grade</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>j.smith@parkaerospace.com</td><td>Park Aerospace Corp</td><td>Kansas, US / business ISP</td><td>1.00</td><td><span class="grade gA">A</span></td><td>Corporate email, domain matches company name</td></tr>
+            <tr><td>sales@eliteap.com</td><td>Elite Advanced Polymers</td><td>Ontario, CA / business ISP</td><td>0.75</td><td><span class="grade gA">A</span></td><td>Domain matches company initials</td></tr>
+            <tr><td>mike.r@gmail.com</td><td>Northwind Logistics</td><td>Ohio, US / residential</td><td>0.00</td><td><span class="grade gB">B</span></td><td>Free-mail address, location plausible</td></tr>
+            <tr><td>test@mailinator.com</td><td>Fortune Corp</td><td>Frankfurt, DE / hosting</td><td>0.00</td><td><span class="grade gC">C</span></td><td>Throwaway email, datacenter IP</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="container">
+      <div class="section-header"><h2>Everything you need to triage leads faster</h2></div>
+      <div class="grid4">
+        <div class="card"><h4>IP geolocation</h4><p>City, region, country, postal code, coordinates, and timezone.</p></div>
+        <div class="card"><h4>Network owner</h4><p>ASN and organization, with hosting and datacenter networks flagged.</p></div>
+        <div class="card"><h4>Email-to-company match</h4><p>Seven matching strategies, including concatenated names and acronyms.</p></div>
+        <div class="card"><h4>Free and throwaway mail</h4><p>Flags Gmail, Outlook, and common disposable-inbox domains.</p></div>
+        <div class="card"><h4>A/B/C lead grade</h4><p>One grade per row, with a plain-language reason you can share with sales.</p></div>
+        <div class="card"><h4>Batch processing</h4><p>Hundreds of rows per run, with progress and a cancel button.</p></div>
+        <div class="card"><h4>CRM-ready export</h4><p>Your original columns plus the enrichment, in one CSV.</p></div>
+        <div class="card"><h4>Privacy-first</h4><p>Your file is read in your browser. Only the IPs are looked up, and nothing is stored.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container narrow">
+      <div class="section-header"><h2>Common questions</h2></div>
+      <details class="faq-item"><summary>Is it really free?</summary><p>Yes. The tool is free to use with no account. Lookups run through our IP data provider, so very heavy use is rate limited to keep it fair for everyone.</p></details>
+      <details class="faq-item"><summary>Do you store my data?</summary><p>No. Your CSV is parsed in your browser. Only the IP addresses are sent for lookup, and results are cached for at most 24 hours, unlinked to you. Email addresses and names never leave your device.</p></details>
+      <details class="faq-item"><summary>How accurate is the location data?</summary><p>IP location is very reliable at the country level and usually good at the region level. City-level results are an estimate, and VPNs or mobile networks can place a visitor far from where they really are. Treat location as one signal, not proof.</p></details>
+      <details class="faq-item"><summary>How is the email match scored?</summary><p>We compare the email domain with the company name using several strategies, from exact matches to acronyms. Scores run from 0.0 to 1.0, and the <a href="/docs/#scoring">docs</a> explain each one.</p></details>
+      <details class="faq-item"><summary>Does it detect VPNs and proxies?</summary><p>It flags IPs that belong to hosting and datacenter networks, which is where most VPN and proxy traffic comes from. Full VPN, proxy, and Tor detection needs a paid IP data plan and isn't included yet.</p></details>
+      <details class="faq-item"><summary>Can I use it for work?</summary><p>Yes. Commercial use is allowed under our <a href="/terms/">terms</a>.</p></details>
+    </div>
+  </section>
+
+  <section class="cta-final">
+    <div class="container">
+      <h2>Ready to stop guessing about your leads?</h2>
+      <p class="muted">Run your last batch of form submissions through the tool. It takes about a minute.</p>
+      <p style="margin-top:22px"><a href="/app/" class="btn lg">Launch Free Tool</a></p>
+      <p class="muted" style="margin-top:18px">Have a question? <a href="#contact">Send us a message</a>.</p>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column"><h4>Product</h4><ul><li><a href="/app/">Launch Tool</a></li><li><a href="/docs/">Documentation</a></li></ul></div>
+        <div class="footer-column"><h4>Contact</h4><ul><li><a href="mailto:hello@soluniplabs.com">hello@soluniplabs.com</a></li></ul></div>
+        <div class="footer-column"><h4>Legal</h4><ul><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Use</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">&copy; <span data-year>2026</span> SolunIP Labs &bull; Illuminating the unseen web</div>
+    </div>
+  </footer>
+  <script src="/assets/site.js" defer></script>
+</body>
+</html>

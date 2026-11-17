@@ -1,0 +1,32 @@
+name = "soluniplabs-site"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "SITE"       # static files, keyed by path (namespace "soluniplabs-site")
+id = "712b4e00933b4a79a7d306b22467ab59"
+
+[[services]]
+binding = "IPINFO"
+service = "ipinfo-proxy"
+
+[[kv_namespaces]]
+binding = "MESSAGES"   # contact form messages (namespace "soluniplabs-messages")
+id = "7c40156f67704a5587363a72173b5e31"
+
+# Emails a copy of each contact message. The destination address is set in Cloudflare
+# (NOTIFY_TO variable on the worker), not in this repo. Needs Email Routing on soluniplabs.com.
+[[send_email]]
+name = "MAIL"
+
+[[ratelimits]]
+name = "CONTACT_LIMITER"
+namespace_id = "1002"
+simple = { limit = 5, period = 60 }
+
+# Go live on the real domain (after testing the workers.dev preview):
+# routes = [
+#   { pattern = "soluniplabs.com", custom_domain = true },
+#   { pattern = "www.soluniplabs.com", custom_domain = true },
+# ]
