@@ -215,7 +215,7 @@ function render() {
 
   const cols = columns();
   const thead = document.querySelector("#table thead");
-  thead.innerHTML = "<tr>" + cols.map(([h], i) => `<th data-col="${i}">${h}${state.sort?.col === i ? (state.sort.dir > 0 ? " &#9650;" : " &#9660;") : ""}</th>`).join("") + "</tr>";
+  thead.innerHTML = "<tr>" + cols.map(([h], i) => `<th data-col="${i}"${state.sort?.col === i ? (state.sort.dir > 0 ? ' class="asc"' : ' class="desc"') : ""}>${h}</th>`).join("") + "</tr>";
   const rows = visible();
   const body = rows.slice(0, 1000).map((r) => "<tr>" + cols.map(([h, get, cls]) => {
     const v = get(r) ?? "";

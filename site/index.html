@@ -16,45 +16,47 @@
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/site.css">
   <style>
-    .hero { background: linear-gradient(135deg, #0b1220 0%, #2C3E50 100%); padding: 80px 0; position: relative; overflow: hidden; }
-    .hero::before { content: ""; position: absolute; top: -50%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(253,184,19,0.1) 0%, transparent 70%); border-radius: 50%; }
-    .hero-content { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
-    .hero h1 { font-size: 50px; font-weight: 800; line-height: 1.15; margin-bottom: 18px; }
-    .hero .sub { font-size: 20px; color: var(--slate); margin-bottom: 26px; }
-    .benefits { list-style: none; margin-bottom: 30px; }
-    .benefits li { padding: 8px 0 8px 30px; position: relative; color: var(--ink); }
-    .benefits li::before { content: "\2713"; position: absolute; left: 0; color: var(--gold); font-weight: bold; font-size: 20px; }
+    .hero { padding: 84px 0 92px; border-bottom: 1px solid var(--line); }
+    .hero-content { display: grid; grid-template-columns: 1.15fr 1fr; gap: 72px; align-items: start; }
+    .hero h1 { font-size: 58px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 22px; }
+    .hero .sub { font-size: 19px; color: var(--slate); margin-bottom: 26px; max-width: 34em; }
+    .benefits { list-style: none; margin-bottom: 32px; }
+    .benefits li { padding: 6px 0 6px 22px; position: relative; }
+    .benefits li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
     .hero .note { margin-top: 14px; color: var(--slate); font-size: 14px; }
-    .toolkit { background: rgba(44,62,80,0.6); border: 1px solid rgba(253,184,19,0.25); border-radius: 12px; padding: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-    .badge { display: inline-block; background: rgba(253,184,19,0.15); color: var(--gold); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-    .toolkit h3 { font-size: 22px; margin-bottom: 8px; }
-    .toolkit ul { list-style: none; margin: 14px 0 18px; }
-    .toolkit li { color: var(--ink); padding: 4px 0; font-size: 15px; }
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
-    .card .icon { font-size: 36px; margin-bottom: 12px; }
-    .card h3 { color: var(--gold); margin-bottom: 10px; font-size: 21px; }
-    .card h4 { margin-bottom: 8px; font-size: 17px; }
+    .toolkit { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 30px; box-shadow: 0 24px 48px -28px rgba(22, 32, 46, 0.3); }
+    .toolkit h3 { font-size: 21px; margin-bottom: 6px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px 28px; }
+    .grid3 .card, .grid4 .card { background: none; border: 0; border-top: 1px solid var(--edge); border-radius: 0; padding: 18px 0 0; }
+    .card h3 { font-size: 18px; margin-bottom: 8px; }
+    .card h4 { font-size: 16px; margin-bottom: 6px; }
     .card p { color: var(--slate); font-size: 15px; }
-    .steps .card { text-align: center; }
-    .sample { width: 100%; border-collapse: collapse; font-size: 14px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; }
-    .sample th, .sample td { padding: 12px 14px; text-align: left; border-bottom: 1px solid rgba(149,165,166,0.15); }
-    .sample th { color: var(--gold); background: rgba(44,62,80,0.6); font-weight: 600; }
-    .grade { display: inline-block; min-width: 28px; text-align: center; border-radius: 6px; font-weight: 700; padding: 2px 8px; color: #000; }
-    .gA { background: var(--good); } .gB { background: var(--warn); } .gC { background: var(--bad); }
-    .table-wrap { overflow-x: auto; }
-    .faq-item { background: var(--card); margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--line); }
-    .faq-item summary { padding: 18px 20px; cursor: pointer; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
-    .faq-item summary::after { content: "+"; color: var(--gold); font-size: 20px; }
-    .faq-item[open] summary::after { content: "\2212"; }
-    .faq-item p { padding: 0 20px 18px; color: var(--slate); }
-    .cta-final { background: linear-gradient(135deg, #2C3E50 0%, #0b1220 100%); text-align: center; }
-    .cta-final h2 { font-size: 40px; margin-bottom: 14px; }
-    .cta-final form { max-width: 520px; margin: 26px auto 0; text-align: left; }
+    .steps { counter-reset: step; }
+    .steps .card { border-top: 0; padding-top: 0; }
+    .steps .card::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold); color: var(--ink); font-weight: 700; font-size: 14px; margin-bottom: 16px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+    .sample { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .sample th, .sample td { padding: 13px 16px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    .sample tr:last-child td { border-bottom: 0; }
+    .sample th { color: var(--ink); background: var(--soft); font-weight: 600; font-size: 13px; }
+    .sample td:last-child { color: var(--slate); white-space: normal; min-width: 220px; }
+    .grade { display: inline-block; min-width: 26px; text-align: center; border-radius: 6px; font-weight: 700; font-size: 13px; padding: 2px 8px; }
+    .gA { background: #dcfce7; color: #166534; } .gB { background: #fef3c7; color: #92400e; } .gC { background: #fee2e2; color: #991b1b; } .g- { background: var(--soft); color: var(--slate); }
+    .faq-item { border-bottom: 1px solid var(--line); }
+    .faq-item summary { padding: 20px 0; cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: "+"; color: var(--slate); font-size: 20px; line-height: 1.2; font-weight: 400; }
+    .faq-item[open] summary::after { content: "−"; }
+    .faq-item p { padding: 0 0 20px; color: var(--slate); max-width: 62ch; }
+    .cta-final { background: var(--soft); border-top: 1px solid var(--line); }
+    .cta-final h2 { font-size: 36px; letter-spacing: -0.03em; margin-bottom: 12px; }
     @media (max-width: 900px) {
-      .hero-content, .grid3 { grid-template-columns: 1fr; }
+      .hero { padding: 56px 0 64px; }
+      .hero-content, .grid3 { grid-template-columns: 1fr; gap: 40px; }
+      .grid3 { gap: 28px; }
       .grid4 { grid-template-columns: repeat(2, 1fr); }
-      .hero h1 { font-size: 36px; }
+      .hero h1 { font-size: 40px; }
     }
     @media (max-width: 520px) { .grid4 { grid-template-columns: 1fr; } }
   </style>
@@ -69,7 +71,7 @@
       <nav class="top">
         <a class="link" href="#how">How it works</a>
         <a class="link" href="/docs/">Docs</a>
-        <a class="btn" href="/app/">Launch Tool &rarr;</a>
+        <a class="btn" href="/app/">Launch Tool</a>
       </nav>
     </div>
   </header>
@@ -84,12 +86,11 @@
           <li>Score email-to-company alignment and flag free-mail and throwaway addresses</li>
           <li>Export a graded CSV ready for HubSpot, Salesforce, or any CRM</li>
         </ul>
-        <a href="/app/" class="btn lg">Launch Free Tool &rarr;</a>
+        <a href="/app/" class="btn lg">Launch Free Tool</a>
         <p class="note">No signup. Runs in your browser. Your lead list is never stored.</p>
       </div>
 
       <div class="toolkit" id="contact">
-        <span class="badge">Contact</span>
         <h3>Questions or need a hand?</h3>
         <p class="muted">Ask about the tool, or about building lead validation into your own workflow. We reply by email.</p>
         <form data-contact="hero" method="post" action="/api/contact" style="margin-top:16px">
@@ -98,7 +99,7 @@
           <div class="field"><input type="text" name="company" placeholder="Company (optional)" autocomplete="organization" maxlength="200"></div>
           <div class="field"><textarea name="message" placeholder="How can we help?" required maxlength="4000" rows="4"></textarea></div>
           <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-          <button type="submit" class="btn" style="width:100%">Send message &rarr;</button>
+          <button type="submit" class="btn" style="width:100%">Send message</button>
           <p class="form-msg" role="status"></p>
           <p class="small muted">We only use your details to reply. See our <a href="/privacy/">privacy policy</a>.</p>
         </form>
@@ -113,9 +114,9 @@
         <p>Most of it is easy to catch once you look. Nobody has time to look at every row.</p>
       </div>
       <div class="grid3">
-        <div class="card"><div class="icon">&#128231;</div><h3>Mismatched emails</h3><p>"Acme Corp" submitted from a Gmail address, or from a domain with no connection to the company. Some are fine. Many are students, competitors, or bots.</p></div>
-        <div class="card"><div class="icon">&#9201;&#65039;</div><h3>Wasted sales time</h3><p>Every junk lead that reaches a rep costs a call, an email sequence, and a little more trust between marketing and sales.</p></div>
-        <div class="card"><div class="icon">&#128373;&#65039;</div><h3>Hidden signals</h3><p>Submissions from hosting providers, far-off countries, or networks that don't fit the company are strong hints that something is off.</p></div>
+        <div class="card"><h3>Mismatched emails</h3><p>"Acme Corp" submitted from a Gmail address, or from a domain with no connection to the company. Some are fine. Many are students, competitors, or bots.</p></div>
+        <div class="card"><h3>Wasted sales time</h3><p>Every junk lead that reaches a rep costs a call, an email sequence, and a little more trust between marketing and sales.</p></div>
+        <div class="card"><h3>Hidden signals</h3><p>Submissions from hosting providers, far-off countries, or networks that don't fit the company are strong hints that something is off.</p></div>
       </div>
     </div>
   </section>
@@ -124,9 +125,9 @@
     <div class="container">
       <div class="section-header"><h2>Three steps, about a minute</h2></div>
       <div class="grid3 steps">
-        <div class="card"><div class="icon">&#128228;</div><h3>Upload</h3><p>Drop in a CSV export from your form tool or CRM, or paste a list of IPs. Columns like Email, Company, and IP are detected automatically.</p></div>
-        <div class="card"><div class="icon">&#10024;</div><h3>Enrich and score</h3><p>Each IP gets location and network data. Each email gets a match score against its company, and each row gets an A, B, or C grade with the reasons.</p></div>
-        <div class="card"><div class="icon">&#128190;</div><h3>Export</h3><p>Filter to the grades you want and download a clean CSV. Import it straight back into your CRM.</p></div>
+        <div class="card"><h3>Upload</h3><p>Drop in a CSV export from your form tool or CRM, or paste a list of IPs. Columns like Email, Company, and IP are detected automatically.</p></div>
+        <div class="card"><h3>Enrich and score</h3><p>Each IP gets location and network data. Each email gets a match score against its company, and each row gets an A, B, or C grade with the reasons.</p></div>
+        <div class="card"><h3>Export</h3><p>Filter to the grades you want and download a clean CSV. Import it straight back into your CRM.</p></div>
       </div>
     </div>
   </section>
@@ -155,14 +156,14 @@
     <div class="container">
       <div class="section-header"><h2>Everything you need to triage leads faster</h2></div>
       <div class="grid4">
-        <div class="card"><div class="icon">&#127757;</div><h4>IP geolocation</h4><p>City, region, country, postal code, coordinates, and timezone.</p></div>
-        <div class="card"><div class="icon">&#127970;</div><h4>Network owner</h4><p>ASN and organization, with hosting and datacenter networks flagged.</p></div>
-        <div class="card"><div class="icon">&#128231;</div><h4>Email-to-company match</h4><p>Seven matching strategies, including concatenated names and acronyms.</p></div>
-        <div class="card"><div class="icon">&#128683;</div><h4>Free and throwaway mail</h4><p>Flags Gmail, Outlook, and common disposable-inbox domains.</p></div>
-        <div class="card"><div class="icon">&#127919;</div><h4>A/B/C lead grade</h4><p>One grade per row, with a plain-language reason you can share with sales.</p></div>
-        <div class="card"><div class="icon">&#128202;</div><h4>Batch processing</h4><p>Hundreds of rows per run, with progress and a cancel button.</p></div>
-        <div class="card"><div class="icon">&#128188;</div><h4>CRM-ready export</h4><p>Your original columns plus the enrichment, in one CSV.</p></div>
-        <div class="card"><div class="icon">&#128737;&#65039;</div><h4>Privacy-first</h4><p>Your file is read in your browser. Only the IPs are looked up, and nothing is stored.</p></div>
+        <div class="card"><h4>IP geolocation</h4><p>City, region, country, postal code, coordinates, and timezone.</p></div>
+        <div class="card"><h4>Network owner</h4><p>ASN and organization, with hosting and datacenter networks flagged.</p></div>
+        <div class="card"><h4>Email-to-company match</h4><p>Seven matching strategies, including concatenated names and acronyms.</p></div>
+        <div class="card"><h4>Free and throwaway mail</h4><p>Flags Gmail, Outlook, and common disposable-inbox domains.</p></div>
+        <div class="card"><h4>A/B/C lead grade</h4><p>One grade per row, with a plain-language reason you can share with sales.</p></div>
+        <div class="card"><h4>Batch processing</h4><p>Hundreds of rows per run, with progress and a cancel button.</p></div>
+        <div class="card"><h4>CRM-ready export</h4><p>Your original columns plus the enrichment, in one CSV.</p></div>
+        <div class="card"><h4>Privacy-first</h4><p>Your file is read in your browser. Only the IPs are looked up, and nothing is stored.</p></div>
       </div>
     </div>
   </section>
@@ -183,8 +184,8 @@
     <div class="container">
       <h2>Ready to stop guessing about your leads?</h2>
       <p class="muted">Run your last batch of form submissions through the tool. It takes about a minute.</p>
-      <p style="margin-top:22px"><a href="/app/" class="btn lg">Launch Free Tool &rarr;</a></p>
-      <p class="muted" style="margin-top:22px">Have a question? <a href="#contact">Send us a message</a>.</p>
+      <p style="margin-top:22px"><a href="/app/" class="btn lg">Launch Free Tool</a></p>
+      <p class="muted" style="margin-top:18px">Have a question? <a href="#contact">Send us a message</a>.</p>
     </div>
   </section>
 
