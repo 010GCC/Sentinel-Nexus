@@ -51,6 +51,10 @@ test("network type", () => {
   assert.equal(networkType({ org: "AS14061 DigitalOcean, LLC" }), "hosting");
   assert.equal(networkType({ org: "AS7922 Comcast Cable Communications, LLC" }), "isp");
   assert.equal(networkType({ org: "AS12345 Blue Peak Machinery" }), "business");
+  // Google's own network is servers and Google Cloud; Google Fiber is a home ISP
+  assert.equal(networkType({ org: "AS15169 Google LLC", hostname: "dns.google" }), "hosting");
+  assert.equal(networkType({ org: "AS396982 Google LLC" }), "hosting");
+  assert.equal(networkType({ org: "AS16591 Google Fiber Inc." }), "isp");
   assert.equal(networkType({ privacy: { vpn: true } }), "anonymizer");
 });
 
