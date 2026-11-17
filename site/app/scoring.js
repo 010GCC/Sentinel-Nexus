@@ -176,7 +176,7 @@ export function companyEmailCheck(email, company) {
 }
 
 const HOSTING_HINTS = [
-  "amazon", "aws", "google cloud", "googleusercontent", "microsoft azure", "azure", "digitalocean", "linode",
+  "amazon", "aws", "google llc", "google cloud", "googleusercontent", "1e100.net", "dns.google", "microsoft azure", "azure", "digitalocean", "linode",
   "akamai", "ovh", "hetzner", "vultr", "choopa", "contabo", "leaseweb", "m247", "datacamp", "cdn77", "hostinger",
   "godaddy", "rackspace", "oracle cloud", "alibaba", "tencent", "scaleway", "packet host", "psychz", "quadranet",
   "colocrossing", "hostwinds", "ionos", "server", "hosting", "datacenter", "data center", "vps", "cloud",
@@ -185,7 +185,7 @@ const HOSTING_HINTS = [
 const MOBILE_HINTS = ["t-mobile", "verizon wireless", "cellco", "at&t mobility", "vodafone", "sprint", "mobile", "wireless", "telcel", "jio"];
 const ISP_HINTS = ["comcast", "charter", "spectrum", "cox", "frontier", "centurylink", "lumen", "windstream", "mediacom",
   "optimum", "altice", "rogers", "shaw", "bell canada", "telus", "bt ", "virgin media", "sky ", "deutsche telekom",
-  "orange", "telefonica", "at&t", "verizon", "brightspeed", "wow", "suddenlink", "broadband", "cable", "telecom", "communications"];
+  "orange", "telefonica", "at&t", "verizon", "google fiber", "brightspeed", "wow", "suddenlink", "broadband", "cable", "telecom", "communications"];
 
 /** Classify an IPinfo record's network: hosting, mobile, isp, business, unknown */
 export function networkType(info) {
